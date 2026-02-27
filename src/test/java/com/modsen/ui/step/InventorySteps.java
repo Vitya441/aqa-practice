@@ -2,9 +2,7 @@ package com.modsen.ui.step;
 
 import com.modsen.ui.model.ProductModel;
 import com.modsen.ui.page.InventoryPage;
-import lombok.Getter;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
@@ -15,66 +13,80 @@ import java.util.List;
 public class InventorySteps {
 
     private WebDriver driver;
-    @Getter
-    private InventoryPage inventoryPage;
-    private List<String> addedProducts;
+    private InventoryPage page;
 
     public InventorySteps(WebDriver driver) {
         this.driver = driver;
-        inventoryPage = new InventoryPage(driver);
-        addedProducts = new ArrayList<>();
+        page = new InventoryPage(driver);
     }
 
     public InventorySteps addItemToCart() {
-        inventoryPage.clickAddToCart();
+        page.clickAddToCart();
         return this;
     }
 
     public InventorySteps verifyButtonText(String expected) {
-        Assertions.assertEquals(expected, inventoryPage.getButtonText());
+        Assertions.assertEquals(expected, page.getButtonText());
         return this;
     }
 
     public InventorySteps verifyBudgeCount(String expected) {
-        Assertions.assertEquals(expected, inventoryPage.getHeader().getCardBadgeValue());
+        Assertions.assertEquals(expected, page.getCardBadgeValue());
         return this;
     }
 
-    public CartSteps goToCart() {
-        inventoryPage.getHeader().clickShoppingCartLink();
+    public CartSteps onCartPage() {
         return new CartSteps(driver);
     }
 
+    public InventorySteps clickShoppingCartLink() {
+        page.clickShoppingCartLink();
+        return this;
+    }
+
     public InventorySteps add3RandomProducts() {
-        List<String> allNames = new ArrayList<>(inventoryPage.getAllProductNames());
+        List<String> allNames = new ArrayList<>(page.getAllProductNames());
         Collections.shuffle(allNames);
 
         for (int i = 0; i < 3; i++) {
             String name = allNames.get(i);
-            inventoryPage.clickButtonByProductName(name);
-            addedProducts.add(name);
-
+            page.clickButtonByProductName(name);
             verifyBudgeCount(String.valueOf(i + 1));
         }
 
         return this;
     }
 
-    public InventorySteps verifyProductIsAvailable(String name) {
-        String xpath = String.format("//div[text()='%s']/ancestor::div[@class='inventory_item']//button", name);
-        String btnText = driver.findElement(By.xpath(xpath)).getText();
-        Assertions.assertEquals("Add to cart", btnText);
+    public InventorySteps sortItems(String sortValue) {
+        page.selectSortOption(sortValue);
+        return this;
+    }
+
+    public ProductModel getProductDataByName(String productName) {
+        return page.getProductDataByName(productName);
+    }
+
+    public InventoryDetailsSteps openProductByName(String productName) {
+        page.openProductByName(productName);
+        return new InventoryDetailsSteps(driver);
+    }
+
+    public InventorySteps verifyProductIsAvailable(String productName) {
+        String actualButtonText = page.getButtonTextByProductName(productName);
+        Assertions.assertEquals("Add to cart", actualButtonText);
 
         return this;
     }
 
-    public InventorySteps sortItems(String sortValue) {
-        inventoryPage.selectSortOption(sortValue);
+    public InventorySteps verifyInventoryPageVisible() {
+        String actualTitle = page.getInventoryTitleText();
+        Assertions.assertEquals("Products", actualTitle);
+
         return this;
     }
 
     public InventorySteps verifySortByNameAscending() {
-        List<String> actualNames = inventoryPage.getAllProductNames();
+        List<String> actualNames = page.getAllProductNames();
         List<String> expectedNames = actualNames.stream().sorted().toList();
         Assertions.assertEquals(expectedNames, actualNames);
 
@@ -82,7 +94,7 @@ public class InventorySteps {
     }
 
     public InventorySteps verifySortByNameDescending() {
-        List<String> actualNames = inventoryPage.getAllProductNames();
+        List<String> actualNames = page.getAllProductNames();
         List<String> expectedNames = actualNames.stream().sorted(Comparator.reverseOrder()).toList();
         Assertions.assertEquals(expectedNames, actualNames);
 
@@ -90,7 +102,7 @@ public class InventorySteps {
     }
 
     public InventorySteps verifySortByPriceAscending() {
-        List<Double> actualPrices = inventoryPage.getAllProductPrices();
+        List<Double> actualPrices = page.getAllProductPrices();
         List<Double> expectedPrices = actualPrices.stream().sorted().toList();
         Assertions.assertEquals(expectedPrices, actualPrices);
 
@@ -98,27 +110,9 @@ public class InventorySteps {
     }
 
     public InventorySteps verifySortByPriceDescending() {
-        List<Double> actualPrices = inventoryPage.getAllProductPrices();
+        List<Double> actualPrices = page.getAllProductPrices();
         List<Double> expectedPrices = actualPrices.stream().sorted(Comparator.reverseOrder()).toList();
         Assertions.assertEquals(expectedPrices, actualPrices);
-
-        return this;
-    }
-
-    // TODO: Не нравиться создавать методы, которые просто делегируют вызов другому слою (Page)
-    //       Такая ситуация не только в этом месте
-    public ProductModel getProductDataByName(String productName) {
-        return inventoryPage.getProductDataByName(productName);
-    }
-
-    public InventoryDetailsSteps openProductByName(String productName) {
-        inventoryPage.openProductByName(productName);
-        return new InventoryDetailsSteps(driver);
-    }
-
-    public InventorySteps verifyInventoryPageVisible() {
-        String actualTitle = inventoryPage.getInventoryTitleText();
-        Assertions.assertEquals("Products", actualTitle);
 
         return this;
     }

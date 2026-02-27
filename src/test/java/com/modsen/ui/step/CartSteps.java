@@ -1,81 +1,79 @@
 package com.modsen.ui.step;
 
 import com.modsen.ui.page.CartPage;
-import lombok.Getter;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
-import java.util.Random;
 
 
 public class CartSteps {
 
-    private CartPage cartPage;
+    private CartPage page;
     private WebDriver driver;
-    @Getter
-    private String removedProductName;
 
     public CartSteps(WebDriver driver) {
         this.driver = driver;
-        this.cartPage = new CartPage(driver);
+        this.page = new CartPage(driver);
     }
 
     public CartSteps removeItem() {
-        cartPage.clickRemoveButton();
+        page.clickRemoveButton();
         return this;
     }
 
+    public CartSteps removeItemByName(String productName) {
+        page.clickRemoveButtonByProductName(productName);
+        return this;
+    }
+
+
+    public CartSteps clickContinueShopping() {
+        page.clickContinueShoppingButton();
+        return this;
+    }
+
+    public InventorySteps onInventoryPage() {
+        return new InventorySteps(driver);
+    }
+
+    public CartSteps clickCheckoutButton() {
+        page.clickCheckoutButton();
+        return this;
+    }
+
+    public CheckoutInformationSteps onCheckoutInformationPage() {
+        return new CheckoutInformationSteps(driver);
+    }
+
+    public List<String> getItemNamesInCart() {
+        return page.getCartItems().stream()
+                .map(item -> page.getItemName(item))
+                .toList();
+    }
+
     public CartSteps verifyCartIsEmpty() {
-        Assertions.assertEquals("0", cartPage.getHeader().getCardBadgeValue());
+        Assertions.assertEquals("0", page.getCardBadgeValue());
         return this;
     }
 
     public CartSteps verify3ItemsPresent() {
-        Assertions.assertEquals(3, cartPage.getCartItemsCount());
-        return this;
-    }
-
-    public CartSteps verifyAllItemsDetails() {
-        for (WebElement item : cartPage.getCartItems()) {
-            Assertions.assertTrue(cartPage.isPriceAndRemoveButtonPresent(item),
-                    "Product: " + cartPage.getItemName(item) + " has not price or 'Remove' button");
-        }
-
-        return this;
-    }
-
-    public CartSteps removeRandomItem() {
-        List<WebElement> items = cartPage.getCartItems();
-        int randomIndex = new Random().nextInt(items.size());
-        WebElement itemToRemove = items.get(randomIndex);
-
-        removedProductName = cartPage.getItemName(itemToRemove);
-        itemToRemove.findElement(By.cssSelector("button[id^='remove']")).click();
-
+        Assertions.assertEquals(3, page.getCartItemsCount());
         return this;
     }
 
     public CartSteps verifyTwoItemsLeft() {
-        Assertions.assertEquals(2, cartPage.getCartItemsCount());
+        Assertions.assertEquals(2, page.getCartItemsCount());
         return this;
     }
 
-    public InventorySteps returnToInventory() {
-        driver.findElement(By.id("continue-shopping")).click();
-        return new InventorySteps(driver);
-    }
+    public CartSteps verifyAllItemsDetails() {
+        for (WebElement item : page.getCartItems()) {
+            Assertions.assertTrue(page.isPriceAndRemoveButtonPresent(item),
+                    "Product: " + page.getItemName(item) + " has not price or 'Remove' button");
+        }
 
-    public CheckoutSteps goToCheckout() {
-        cartPage.clickCheckoutButton();
-        return new CheckoutSteps(driver);
-    }
-
-    public List<String> getItemNamesInCart() {
-        return cartPage.getCartItems().stream()
-                .map(item -> cartPage.getItemName(item))
-                .toList();
+        return this;
     }
 }

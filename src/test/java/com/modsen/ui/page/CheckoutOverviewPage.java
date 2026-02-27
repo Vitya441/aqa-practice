@@ -8,9 +8,9 @@ import java.util.List;
 
 public class CheckoutOverviewPage extends BasePage {
 
-    private By cartItems = By.cssSelector(".cart_list .cart_item");
-    private By itemNames = By.cssSelector(".inventory_item_name");
-    private By finishButton = By.cssSelector("[data-test='finish']");
+    private By cartItems = By.xpath("//div[@data-test='cart-list']");
+    private By itemNames = By.xpath("//div[@data-test='inventory-item-name']");
+    private By finishButton = By.xpath("//button[@data-test='finish']");
 
     public CheckoutOverviewPage(WebDriver driver) {
         super(driver);

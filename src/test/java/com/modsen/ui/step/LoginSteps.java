@@ -18,11 +18,15 @@ public class LoginSteps {
         return this;
     }
 
-    public InventorySteps login(String username, String password) {
+    public LoginSteps login(String username, String password) {
         loginPage.enterUsername(username);
         loginPage.enterPassword(password);
         loginPage.clickLoginButton();
 
+        return this;
+    }
+
+    public InventorySteps onInventoryPage() {
         return new InventorySteps(driver);
     }
 }
