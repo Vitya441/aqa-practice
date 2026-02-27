@@ -9,8 +9,8 @@ import java.util.List;
 public class HeaderComponent {
 
     private WebDriver driver;
-    private By shoppingCartLink = By.className("shopping_cart_link");
-    private By shoppingCartBadge = By.className("shopping_cart_badge");
+    private By shoppingCartLink = By.xpath("//a[@data-test='shopping-cart-link']");
+    private By shoppingCartBadge = By.xpath("//span[@data-test='shopping-cart-badge']");
 
     public HeaderComponent(WebDriver driver) {
         this.driver = driver;

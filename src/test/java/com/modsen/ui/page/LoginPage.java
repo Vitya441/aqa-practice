@@ -5,9 +5,9 @@ import org.openqa.selenium.WebDriver;
 
 public class LoginPage extends BasePage {
 
-    private By usernameField = By.id("user-name");
-    private By passwordField = By.id("password");
-    private By loginButton = By.id("login-button");
+    private By usernameField = By.xpath("//input[@placeholder='Username']");
+    private By passwordField = By.xpath("//input[@placeholder='Password']");
+    private By loginButton = By.xpath("//input[@type='submit']");
 
     public LoginPage(WebDriver driver) {
         super(driver);

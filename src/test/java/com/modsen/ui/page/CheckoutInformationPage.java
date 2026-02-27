@@ -5,11 +5,11 @@ import org.openqa.selenium.WebDriver;
 
 public class CheckoutInformationPage extends BasePage {
 
-    private By firstNameField = By.id("first-name");
-    private By lastNameField = By.id("last-name");
-    private By zipCodeField = By.id("postal-code");
-    private By continueButton = By.id("continue");
-    private By errorContainer = By.cssSelector("[data-test='error']");
+    private By firstNameField = By.xpath("//input[@placeholder='First Name']");
+    private By lastNameField = By.xpath("//input[@placeholder='Last Name']");
+    private By zipCodeField = By.xpath("//input[@placeholder='Zip/Postal Code']");
+    private By continueButton = By.xpath("//input[contains(@class, 'submit-button')]");
+    private By errorContainer = By.xpath("//div[contains(@class, 'error')]");
 
     public CheckoutInformationPage(WebDriver driver) {
         super(driver);

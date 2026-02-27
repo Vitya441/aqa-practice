@@ -2,7 +2,6 @@ package com.modsen.ui.page;
 
 import com.modsen.ui.model.ProductModel;
 import com.modsen.ui.page.component.HeaderComponent;
-import lombok.Getter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,15 +11,13 @@ import java.util.List;
 
 public class InventoryPage extends BasePage {
 
-    @Getter
     private HeaderComponent header;
-
-    private By inventoryButtons = By.className("btn_inventory");
-    private By inventoryItems = By.className("inventory_item");
-    private By itemNames = By.className("inventory_item_name");
-    private By sortContainer = By.className("product_sort_container");
-    private By productPrices = By.className("inventory_item_price");
-    private By pageTitle = By.className("title");
+    private By inventoryButtons = By.xpath("//button[contains(@class, 'btn_inventory')]");
+    private By inventoryItems = By.xpath("//div[contains(@class, 'inventory_list')]/div");
+    private By itemNames = By.xpath("//div[contains(@class, 'inventory_item_name')]");
+    private By sortContainer = By.xpath("//select");
+    private By productPrices = By.xpath("//div[contains(@class, 'inventory_list')]/div//div[contains(@class, 'inventory_item_price')]");
+    private By pageTitle = By.xpath("//span[contains(@class, 'title')]");
 
     public InventoryPage(WebDriver driver) {
         super(driver);
@@ -66,9 +63,9 @@ public class InventoryPage extends BasePage {
         String containerXpath = String.format("//div[@class='inventory_item'][.//div[text()='%s']]", productName);
         WebElement container = driver.findElement(By.xpath(containerXpath));
 
-        String name = container.findElement(By.className("inventory_item_name")).getText();
-        String description = container.findElement(By.className("inventory_item_desc")).getText();
-        String price = container.findElement(By.className("inventory_item_price")).getText();
+        String name = container.findElement(By.xpath(".//div[@data-test='inventory-item-name']")).getText();
+        String description = container.findElement(By.xpath(".//div[@data-test='inventory-item-desc']")).getText();
+        String price = container.findElement(By.xpath(".//div[@data-test='inventory-item-price']")).getText();
 
         return new ProductModel(name, description, price);
     }
@@ -77,7 +74,20 @@ public class InventoryPage extends BasePage {
         driver.findElement(By.xpath("//div[text()='" + productName + "']")).click();
     }
 
+    public String getButtonTextByProductName(String productName) {
+        String xpath = String.format("//div[text()='%s']/ancestor::div[@class='inventory_item']//button", productName);
+        return driver.findElement(By.xpath(xpath)).getText();
+    }
+
     public String getInventoryTitleText() {
         return driver.findElement(pageTitle).getText();
+    }
+
+    public String getCardBadgeValue() {
+        return header.getCardBadgeValue();
+    }
+
+    public void clickShoppingCartLink() {
+        header.clickShoppingCartLink();
     }
 }
