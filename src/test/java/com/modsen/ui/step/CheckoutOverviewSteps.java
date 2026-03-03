@@ -1,6 +1,7 @@
 package com.modsen.ui.step;
 
 import com.modsen.ui.page.CheckoutOverviewPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class CheckoutOverviewSteps {
         this.page = new CheckoutOverviewPage(driver);
     }
 
+    @Step("Проверка списка товаров в финальном обзоре. Ожидаемый список: {expectedNames}")
     public CheckoutOverviewSteps verifyInventoryList(List<String> expectedNames) {
         List<String> actualNames = page.getItemNames();
         assertThat(expectedNames).isEqualTo(actualNames);
@@ -24,6 +26,7 @@ public class CheckoutOverviewSteps {
         return this;
     }
 
+    @Step("Завершение оформления заказа (нажатие 'Finish')")
     public CheckoutOverviewSteps clickFinishOrder() {
         page.clickFinish();
         return this;

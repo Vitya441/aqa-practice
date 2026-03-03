@@ -3,6 +3,9 @@ package com.modsen.api.tests;
 import com.modsen.api.pojo.Book;
 import com.modsen.api.specification.RequestSpecs;
 import com.modsen.api.specification.ResponseSpecs;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,6 +20,9 @@ import java.util.stream.Stream;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Epic("API тесты")
+@Feature("Книги")
+@Story("CRUD операции")
 class BookTests {
 
     @Test

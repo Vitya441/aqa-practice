@@ -4,6 +4,13 @@ import com.modsen.ui.model.ProductModel;
 import com.modsen.ui.step.CartSteps;
 import com.modsen.ui.step.InventorySteps;
 import com.modsen.ui.step.LoginSteps;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,10 +18,15 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.List;
 import java.util.Random;
 
+@Epic("SauceDemo UI Tests")
 public class MainTest extends BaseTest {
 
     // Задание 2
     @Test
+    @Feature("Authentication")
+    @Story("Login with valid credentials")
+    @Severity(SeverityLevel.BLOCKER)
+    @DisplayName("Успешный логин под стандартным пользователем")
     void shouldSuccessfullyLoginWithValidCredentials() {
         new LoginSteps(driver)
                     .openMainPage()
@@ -79,7 +91,7 @@ public class MainTest extends BaseTest {
 
         cartSteps.clickCheckoutButton()
                 .onCheckoutInformationPage()
-                .   fillShippingInfoAndClickContinue("John", "Doe", "123")
+                    .fillShippingInfoAndClickContinue("John", "Doe", "123")
                 .onCheckoutOverviewPage()
                     .verifyInventoryList(namesInCart)
                     .clickFinishOrder()
@@ -139,9 +151,9 @@ public class MainTest extends BaseTest {
         String targetName = "Sauce Labs Backpack";
         ProductModel expectedProduct = inventorySteps.getProductDataByName(targetName);
 
-        inventorySteps
-                .openProductByName(targetName)
-                .verifyProductData(expectedProduct);
+        inventorySteps.openProductByName(targetName)
+                .onInventoryDetailsPage()
+                    .verifyProductData(expectedProduct);
     }
 
     // Задание 8
@@ -168,18 +180,29 @@ public class MainTest extends BaseTest {
     })
     void shouldSuccessfullyExecuteFullBusinessScenarioForBothUsers(String username, String password) {
         new LoginSteps(driver)
-                .openMainPage()
-                .login(username, password)
+                    .openMainPage()
+                    .login(username, password)
                 .onInventoryPage()
-                .addItemToCart()
-                .clickShoppingCartLink()
+                    .addItemToCart()
+                    .clickShoppingCartLink()
                 .onCartPage()
-                .clickCheckoutButton()
+                    .clickCheckoutButton()
                 .onCheckoutInformationPage()
-                .fillShippingInfoAndClickContinue("John", "Doe", "12345")
+                    .fillShippingInfoAndClickContinue("John", "Doe", "12345")
                 .onCheckoutOverviewPage()
-                .clickFinishOrder()
+                    .clickFinishOrder()
                 .onCheckoutCompletePage()
-                .verifyOrderIsCompletedAndCartIsEmpty();
+                    .verifyOrderIsCompletedAndCartIsEmpty();
+    }
+
+    @Test
+    void shouldAlwaysFail() {
+        new LoginSteps(driver)
+                    .openMainPage()
+                    .login("standard_user", "secret_sauce")
+                .onInventoryPage()
+                        .verifyInventoryPageVisible();
+
+        Assertions.assertThat(1).isEqualTo(2);
     }
 }

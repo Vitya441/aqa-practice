@@ -1,6 +1,7 @@
 package com.modsen.ui.step;
 
 import com.modsen.ui.page.CheckoutCompletePage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +16,7 @@ public class CheckoutCompleteSteps {
         this.page = new CheckoutCompletePage(driver);
     }
 
+    @Step("Проверка успешного завершения заказа и того, что корзина пуста")
     public CheckoutCompleteSteps verifyOrderIsCompletedAndCartIsEmpty() {
         String actualHeaderText = page.getHeaderText();
         assertThat("Thank you for your order!").isEqualTo(actualHeaderText);
